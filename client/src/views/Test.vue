@@ -45,8 +45,13 @@
         console.log('masuk val', val)
         this.room.users[0].attack = val
         this.room.users[0].turn = true
-        db.collection('Rooms')
-          .doc('w7KWDqQyX43xCW3IRLPv').update(this.room)
+        db.collection('users')
+          .where('userId', '==', localStorage.token).get()
+          .then((querysnapshot) => {
+              querysnapshot.forEach((doc) => {
+                  console.log(doc.data())
+              })
+          })
       },
     },
     watch :{
