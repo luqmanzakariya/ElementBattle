@@ -6,7 +6,7 @@
                 Player - {{ i+1 }}: {{ user.name }}
             </b-card-text>
             <div style="display: flex; width: 100%; justify-content: space-between;">
-                <b-button variant="danger" :disabled="room.users.length == 2" v-b-modal="room.id" style="width: 80px; padding: 5px;">Join</b-button>
+                <b-button variant="danger" :disabled="room.users.length == 2 || isJoin" v-b-modal="room.id" style="width: 80px; padding: 5px;">Join</b-button>
                 <b-button variant="success" :disabled="room.users.length < 2 || userStatus" @click.prevent="play(room.id)" style="width: 80px; padding: 5px;">Play</b-button>
             </div>
         </b-card>
@@ -55,15 +55,18 @@ export default {
                 users
             }
             this.$store.dispatch('addUser',obj)
+            this.$store.dispatch('createUser',obj)
         },
         check() {
             const decode = jwt.verify(localStorage.token, 'element')
             if(decode.roomId == this.room.id) {
-                console.log(this.roomId)
                 this.userStatus = true;
             }
         },
         play (id) {
+            if(localStorage.roomId !== id) {
+                
+            }
             this.$router.push(`/play/${id}`)
         }
     },
@@ -71,7 +74,9 @@ export default {
 
     },
     computed: {
-        
+        isJoin() {
+            return this.$store.state.alreadyJoin
+        }
     }
 }
 </script>
