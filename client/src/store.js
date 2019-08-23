@@ -33,7 +33,6 @@ export default new Vuex.Store({
         })
         .then(() => {
         })
-        localStorage.setItem('token',payload.users.userId)
         localStorage.setItem('roomId', payload.users.roomId)
         if(localStorage.token) {
             state.alreadyJoin = true
@@ -48,8 +47,8 @@ export default new Vuex.Store({
             status: false,
             turn: false
         })
-        .then(() => {
-            console.log("created")
+        .then((docRef) => {
+            localStorage.setItem('userId', docRef.id)
         })
     }
   }
