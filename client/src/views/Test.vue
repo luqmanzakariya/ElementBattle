@@ -53,8 +53,8 @@
 
     },
     created(){
-      console.log('created generated')
-      let doc = db.collection('Rooms').doc('w7KWDqQyX43xCW3IRLPv');
+      // console.log('created generated',this.$route.params)
+      let doc = db.collection('Rooms').doc(`${this.$route.params.id}`);
 
       let observer = doc.onSnapshot(docSnapshot => {
         this.room = docSnapshot.data()
