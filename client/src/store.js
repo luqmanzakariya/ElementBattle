@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import db from './apis/firebase'
-import jwt from 'jsonwebtoken'
 import * as firebase from "firebase/app";
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     arrayOfPlayer: [],
-    userLobby: false
+    userLobby: false,
+    alreadyJoin: false
   },
   mutations: {
     checkUser(state, payload) {
@@ -26,15 +26,31 @@ export default new Vuex.Store({
 
         })
     },
-    addUser ({ commit }, payload) {
-        const token = jwt.sign(payload.users, 'element')
+    addUser ({ commit, state }, payload) {
         db.collection('Rooms').doc(payload.id)
         .update({
             users: firebase.firestore.FieldValue.arrayUnion(payload.users)
         })
         .then(() => {
         })
-        localStorage.setItem('token',payload.users.userId)   
-    } 
+        localStorage.setItem('token',payload.users.userId)
+        localStorage.setItem('roomId', payload.users.roomId)
+        if(localStorage.token) {
+            state.alreadyJoin = true
+        }
+    },
+    createUser({ commit }, payload) {
+        db.collection('users').add({
+            userId: payload.users.userId,
+            roomId: payload.users.roomId,
+            name: payload.users.name,
+            attack: '',
+            status: false,
+            turn: false
+        })
+        .then(() => {
+            console.log("created")
+        })
+    }
   }
 })
