@@ -24,6 +24,7 @@
 
 <script>
 import jwt from 'jsonwebtoken'
+import Swal from 'sweetalert2'
 export default {
     props: {
         room: Object
@@ -65,13 +66,20 @@ export default {
         },
         play (id) {
             if(localStorage.roomId !== id) {
-                
+                Swal.fire({
+                    title: 'Wrong room..',
+                    showConfirmButton: false,
+                    timer: 1300
+                })
+                console.log(id)
             }
-            this.$router.push(`/play/${id}`)
+            else {
+                this.$router.push(`/play/${id}`)
+            }
         }
     },
     created() {
-
+        
     },
     computed: {
         isJoin() {
