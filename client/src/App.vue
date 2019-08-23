@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    
       <b-container fluid>
           <b-button variant="primary" style="padding: 5px;" v-b-modal.modal-room>CreateRoom</b-button>
           <b-row class="dflex justify-content-center mt-5">
@@ -13,8 +14,13 @@
                     <b-button variant="primary" type="submit" form="formTask">Confirm</b-button>
                 </div>
             </b-modal>
+            
       </b-container>
+
+
+      
   </div>
+  
 </template>
 <script>
 import Landingpage from './views/Landingpage.vue'
