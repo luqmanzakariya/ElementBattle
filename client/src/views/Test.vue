@@ -1,6 +1,28 @@
 <template>
   <div class="about">
     <h1>Battle!</h1>
+    <h1>{{live}}</h1>
+
+    <!-- ===== Modal Loading ===== -->
+    <div>
+      <b-modal ref="modal-loading" id="modal-loading" centered title="Login" hide-footer hide-header no-close-on-backdrop>
+        <div class="modal-body">
+          <div class="text-center">
+            <a class="loading-font"> Please Wait </a>
+          </div>
+          <div class="text-center">
+            <br>
+            <b-spinner variant="primary" type="grow" label="Spinning"></b-spinner>
+            <b-spinner variant="secondary" type="grow" label="Spinning"></b-spinner>
+            <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>
+            <b-spinner variant="danger" type="grow" label="Spinning"></b-spinner>
+            <b-spinner variant="warning" type="grow" label="Spinning"></b-spinner>
+            <b-spinner variant="info" type="grow" label="Spinning"></b-spinner>
+            <b-spinner variant="dark" type="grow" label="Spinning"></b-spinner>
+          </div>
+        </div>
+      </b-modal>
+    </div>
 
     <div class="container-fluid">
       <div class="row" style="margin-top:550px">
@@ -34,12 +56,15 @@
 
 <script>
   import db from '../apis/firebase'
+  import swal from 'sweetalert2'
 
 
   export default {
     data(){
       return {
         room : {},
+        live: 0,
+        status: ''
       }
     },
     methods: {
@@ -51,122 +76,133 @@
           .doc(localStorage.userId).update({attack: val})
       },
       compare(){
+        this.$refs['modal-loading'].show()
         console.log('masuk compare')
         let flag = true
         let arr = []
-        db.collection('users').where('roomId', '==', localStorage.roomId).get()
-          .then((querySnapshot) =>{
+        db.collection('users').where('roomId', '==', localStorage.roomId)
+          .onSnapshot((querySnapshot) =>{
             querySnapshot.forEach((doc)=>{
               if(doc.data().attack){
                 arr.push(doc.data())
               }
               
             })
-            console.log(arr)
-            if (arr[0].attack === 'water' && arr[1].attack === 'water'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'water' && arr[1].attack === 'earth'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'water' && arr[1].attack === 'wind'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'water' && arr[1].attack === 'fire'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'earth' && arr[1].attack === 'water'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'earth' && arr[1].attack === 'earth'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'earth' && arr[1].attack === 'wind'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'earth' && arr[1].attack === 'fire'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'wind' && arr[1].attack === 'water'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'wind' && arr[1].attack === 'earth'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'wind' && arr[1].attack === 'wind'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'wind' && arr[1].attack === 'fire'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'fire' && arr[1].attack === 'water'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'fire' && arr[1].attack === 'earth'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'fire' && arr[1].attack === 'wind'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else if (arr[0].attack === 'fire' && arr[1].attack === 'fire'){
-              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
-              console.log(`it's a tie, each player minus 1 heatlh`)
-              db.collection('users')
-                .doc(localStorage.userId).update({attack: ''})
-            }
-            else {
-              console.log(`you or other player hasnt picked the element`)
+            if(arr[0].attack !== '' && arr[1].attack !== '') {
+              // console.log(arr)
+              this.status = ''
+              if (arr[0].attack === 'water' && arr[1].attack === 'water'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+
+              }
+              else if (arr[0].attack === 'water' && arr[1].attack === 'earth'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[1].name} wins using ${arr[1].attack}`)
+                this.status = `${arr[1].name} wins using ${arr[1].attack}`
+
+              }
+              else if (arr[0].attack === 'water' && arr[1].attack === 'wind'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status =`it's a tie, each player minus 1 heatlh`
+
+              }
+              else if (arr[0].attack === 'water' && arr[1].attack === 'fire'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[0].name} wins using ${arr[0].attack}`)
+                this.status = `${arr[0].name} wins using ${arr[0].attack}`
+
+              }
+              else if (arr[0].attack === 'earth' && arr[1].attack === 'water'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[0].name} wins using ${arr[0].attack}`)
+                this.status = `${arr[0].name} wins using ${arr[0].attack}`
+
+              }
+              else if (arr[0].attack === 'earth' && arr[1].attack === 'earth'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+
+              }
+              else if (arr[0].attack === 'earth' && arr[1].attack === 'wind'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[1].name} wins using ${arr[1].attack}`)
+                this.status = `${arr[1].name} wins using ${arr[1].attack}`
+
+              }
+              else if (arr[0].attack === 'earth' && arr[1].attack === 'fire'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+              }
+              else if (arr[0].attack === 'wind' && arr[1].attack === 'water'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+
+              }
+              else if (arr[0].attack === 'wind' && arr[1].attack === 'earth'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[0].name} wins using ${arr[0].attack}`)
+                this.status(`${arr[0].name} wins using ${arr[0].attack}`)
+
+              }
+              else if (arr[0].attack === 'wind' && arr[1].attack === 'wind'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+
+              }
+              else if (arr[0].attack === 'wind' && arr[1].attack === 'fire'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[1].name} wins using ${arr[1].attack}`)
+                this.status = `${arr[1].name} wins using ${arr[1].attack}`
+
+              }
+              else if (arr[0].attack === 'fire' && arr[1].attack === 'water'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[1].name} wins using ${arr[1].attack}`)
+                this.status = `${arr[1].name} wins using ${arr[1].attack}`
+
+              }
+              else if (arr[0].attack === 'fire' && arr[1].attack === 'earth'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+
+              }
+              else if (arr[0].attack === 'fire' && arr[1].attack === 'wind'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`${arr[0].name} wins using ${arr[0].attack}`)
+                this.status(`${arr[0].name} wins using ${arr[0].attack}`)
+
+              }
+              else if (arr[0].attack === 'fire' && arr[1].attack === 'fire'){
+                console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+                // swal.fire(`it's a tie, each player minus 1 heatlh`)
+                this.status = `it's a tie, each player minus 1 heatlh`
+              }
+              else {
+                console.log(`you or other player hasnt picked the element`)
+              }
+              this.$refs['modal-loading'].hide()
+              arr.forEach((el) => {
+                db.collection('users').get(el.id)
+                .update({
+                  attack: ''
+                })
+              })
             }
           })
       }
     },
     watch: {
-      
+      status(newValue, oldValue) {
+        swal.fire(newValue)
+      }
     },
     created(){
       // console.log('created generated',this.$route.params)
