@@ -5,6 +5,9 @@
     <div class="container-fluid">
       <div class="row" style="margin-top:550px">
       </div>
+      <div class="row d-flex justify-content-center" style="width: 100%">
+        <button @click.prevent="compare()">Attack</button>
+      </div>
       <div class="row">
         <div class="col-sm-3 flex-column text-center">
           <img @click.prevent="value('water')" class="attack" src="../assets/1566468614939.png">
@@ -34,23 +37,136 @@
 
 
   export default {
-
     data(){
       return {
-        room : {}
+        room : {},
       }
     },
     methods: {
       value(val){
         console.log('masuk val', val)
-        this.room.users[0].attack = val
-        this.room.users[0].turn = true
-        db.collection('Rooms')
-          .doc('w7KWDqQyX43xCW3IRLPv').update(this.room)
+        // this.room.users[0].attack = val
+        // this.room.users[0].turn = true
+        db.collection('users')
+          .doc(localStorage.userId).update({attack: val})
       },
+      compare(){
+        console.log('masuk compare')
+        let flag = true
+        let arr = []
+        db.collection('users').where('roomId', '==', localStorage.roomId).get()
+          .then((querySnapshot) =>{
+            querySnapshot.forEach((doc)=>{
+              if(doc.data().attack){
+                arr.push(doc.data())
+              }
+              
+            })
+            console.log(arr)
+            if (arr[0].attack === 'water' && arr[1].attack === 'water'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'water' && arr[1].attack === 'earth'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'water' && arr[1].attack === 'wind'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'water' && arr[1].attack === 'fire'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'earth' && arr[1].attack === 'water'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'earth' && arr[1].attack === 'earth'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'earth' && arr[1].attack === 'wind'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'earth' && arr[1].attack === 'fire'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'wind' && arr[1].attack === 'water'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'wind' && arr[1].attack === 'earth'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'wind' && arr[1].attack === 'wind'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'wind' && arr[1].attack === 'fire'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'fire' && arr[1].attack === 'water'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[1].name} wins using ${arr[1].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'fire' && arr[1].attack === 'earth'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'fire' && arr[1].attack === 'wind'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`${arr[0].name} wins using ${arr[0].attack}`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else if (arr[0].attack === 'fire' && arr[1].attack === 'fire'){
+              console.log(`${arr[0].name} attack using ${arr[0].attack}, ${arr[1].name} attack using ${arr[1].attack}`)
+              console.log(`it's a tie, each player minus 1 heatlh`)
+              db.collection('users')
+                .doc(localStorage.userId).update({attack: ''})
+            }
+            else {
+              console.log(`you or other player hasnt picked the element`)
+            }
+          })
+      }
     },
-    watch :{
-
+    watch: {
+      
     },
     created(){
       // console.log('created generated',this.$route.params)
